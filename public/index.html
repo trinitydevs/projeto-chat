@@ -130,10 +130,8 @@
             //Obtém o valor do input da mensagem
             const mensagem = mensagemInput.value;
 
-    
-            const searchBtn = document.querySelector("#btn-enviar")
-           
-
+            //Função para botão com ENTER do teclado
+            const searchBtn = document.querySelector("#btn-enviar");
             mensagens.addEventListener("keyup", (e) => {
 
                 if(e.code === "Enter"){
