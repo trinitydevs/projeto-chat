@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/logo.png">
+    <title>Chat Node.JS e SOCKET.IO</title>
+</head>
+
+<body>
+    <header>
+        <img src="img/logo2.png" id="logo">
+        <img src="img/configuracoes.png" id="config">
+    </header>
+    <form>
+    <main>
+        <div id="maioral">
+            <div id="box-esquerda">
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">Emily Soares</p>
+                            <p>Bom dia, eu acho que é uma pessoa...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">Érica Gonçalves</p>
+                            <p>Talvez se eu conseguir ir lá no sábado...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">José Barreto</p>
+                            <p>Obrigada pelo convite!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">João Marcos</p>
+                            <p>Oi, tudo bem?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">Anna Dantas</p>
+                            <p>Eu amei, sério!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">Sérgio Costi</p>
+                            <p>Boa tarde, hoje eu estarei a disposição...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="caixa">
+                    <div class="itens">
+                        <img src="img/user1.png" id="user">
+                        <div class="inf">
+                            <p class="usuario">Sérgio Costi</p>
+                            <p>Boa tarde, hoje eu estarei a disposição...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="box-direita">
+                <div id="detalhes">
+                    <img id="user2" src="img/user2.png" alt="">
+                    <input type="text" id="nome" placeholder="Seu nome de usuário">
+                </div>
+                <ul id="mensagens"></ul>
+             
+                    <div id="caixa-enviar">
+                        <input type="text" id="mensagem" placeholder="Escreva sua mensagem...">
+                        <button id="btn-enviar">
+                            <img id="icon-enviar" src="img/enviar.png" alt="">
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Importar o script do Socket.IO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //Cria uma instancia do Socket.IO
+        const socket = io();
+
+        //Seleciona o input do nome do usuário
+        const nomeInput = document.getElementById('nome');
+        //Seleciona o input da mensagem
+        const mensagemInput = document.getElementById('mensagem');
+        //Seleciona a lista de mensagens
+        const mensagens = document.getElementById('mensagens');
+
+        //Adiciona um evento para o envio do formulário
+        document.querySelector('form').addEventListener('submit', evento => {
+            //Previne o envio padrão do formulario para não atualizar a página
+            evento.preventDefault();
+            //Obtém o valor do input do nome do usuário
+            const nome = nomeInput.value;
+            //Obtém o valor do input da mensagem
+            const mensagem = mensagemInput.value;
+
+    
+            const searchBtn = document.querySelector("#btn-enviar")
+           
+
+            mensagens.addEventListener("keyup", (e) => {
+
+                if(e.code === "Enter"){
+                    const enviar = e.target.value;
+                    mensagem(enviar);
+                }
+            });
+
+
+            //Método JAVASCRIpt que verifica os valores válidos(Não esta em branco os campos)
+            //EMIT envia um evento chamado 'chat message' com o oebjeto contendo os valores de nome e mensagem para o servidor
+            //TRIM é um método 
+            nome.trim() && mensagem.trim() && socket.emit('chat message', { nome, mensagem });
+
+            //Limpa o input da mensagem
+            mensagemInput.value = '';
+            //Desabilita o input do nome do usuário após a primeira mensagem
+            nomeInput.disabled = true;
+        })
+        //Adiciona um evento de mensagem recebido pelo servidor
+        socket.on('chat message', dados => {
+            //Cria um elemento de lista para exibir a mensagem
+            const lista = document.createElement('li');
+            //Define o texto da mensagem
+            lista.textContent = `${dados.nome}: ${dados.mensagem}`;
+            //Adiciona o elemento de lista de mensagens
+            mensagens.appendChild(lista);
+        })
+    </script>
+</body>
+
+</html>
